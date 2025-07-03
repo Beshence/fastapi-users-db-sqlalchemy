@@ -24,13 +24,12 @@ class SQLAlchemyBaseUserTable(Generic[ID]):
 
     if TYPE_CHECKING:  # pragma: no cover
         id: ID
-        email: str
+        username: str
         hashed_password: str
         is_active: bool
         is_superuser: bool
-        is_verified: bool
     else:
-        email: Mapped[str] = mapped_column(
+        username: Mapped[str] = mapped_column(
             String(length=320), unique=True, index=True, nullable=False
         )
         hashed_password: Mapped[str] = mapped_column(
@@ -38,9 +37,6 @@ class SQLAlchemyBaseUserTable(Generic[ID]):
         )
         is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
         is_superuser: Mapped[bool] = mapped_column(
-            Boolean, default=False, nullable=False
-        )
-        is_verified: Mapped[bool] = mapped_column(
             Boolean, default=False, nullable=False
         )
 
@@ -64,7 +60,7 @@ class SQLAlchemyBaseOAuthAccountTable(Generic[ID]):
         expires_at: Optional[int]
         refresh_token: Optional[str]
         account_id: str
-        account_email: str
+        account_username: str
     else:
         oauth_name: Mapped[str] = mapped_column(
             String(length=100), index=True, nullable=False
@@ -77,7 +73,7 @@ class SQLAlchemyBaseOAuthAccountTable(Generic[ID]):
         account_id: Mapped[str] = mapped_column(
             String(length=320), index=True, nullable=False
         )
-        account_email: Mapped[str] = mapped_column(String(length=320), nullable=False)
+        account_username: Mapped[str] = mapped_column(String(length=320), nullable=False)
 
 
 class SQLAlchemyBaseOAuthAccountTableUUID(SQLAlchemyBaseOAuthAccountTable[UUID_ID]):
@@ -121,9 +117,9 @@ class SQLAlchemyUserDatabase(Generic[UP, ID], BaseUserDatabase[UP, ID]):
         statement = select(self.user_table).where(self.user_table.id == id)
         return await self._get_user(statement)
 
-    async def get_by_email(self, email: str) -> Optional[UP]:
+    async def get_by_username(self, username: str) -> Optional[UP]:
         statement = select(self.user_table).where(
-            func.lower(self.user_table.email) == func.lower(email)
+            func.lower(self.user_table.username) == func.lower(username)
         )
         return await self._get_user(statement)
 

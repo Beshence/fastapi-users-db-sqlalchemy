@@ -55,7 +55,7 @@ async def sqlalchemy_access_token_db(
 
     async with sessionmaker() as session:
         user = User(
-            id=user_id, email="lancelot@camelot.bt", hashed_password="guinevere"
+            id=user_id, username="lancelot@camelot.bt", hashed_password="guinevere"
         )
         session.add(user)
         await session.commit()

@@ -85,7 +85,7 @@ async def sqlalchemy_user_db_oauth() -> AsyncGenerator[SQLAlchemyUserDatabase, N
 @pytest.mark.asyncio
 async def test_queries(sqlalchemy_user_db: SQLAlchemyUserDatabase[User, UUID_ID]):
     user_create = {
-        "email": "lancelot@camelot.bt",
+        "username": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
     }
 
@@ -94,7 +94,7 @@ async def test_queries(sqlalchemy_user_db: SQLAlchemyUserDatabase[User, UUID_ID]
     assert user.id is not None
     assert user.is_active is True
     assert user.is_superuser is False
-    assert user.email == user_create["email"]
+    assert user.username == user_create["username"]
 
     # Update
     updated_user = await sqlalchemy_user_db.update(user, {"is_superuser": True})
@@ -106,18 +106,18 @@ async def test_queries(sqlalchemy_user_db: SQLAlchemyUserDatabase[User, UUID_ID]
     assert id_user.id == user.id
     assert id_user.is_superuser is True
 
-    # Get by email
-    email_user = await sqlalchemy_user_db.get_by_email(str(user_create["email"]))
-    assert email_user is not None
-    assert email_user.id == user.id
+    # Get by username
+    username_user = await sqlalchemy_user_db.get_by_username(str(user_create["username"]))
+    assert username_user is not None
+    assert username_user.id == user.id
 
-    # Get by uppercased email
-    email_user = await sqlalchemy_user_db.get_by_email("Lancelot@camelot.bt")
-    assert email_user is not None
-    assert email_user.id == user.id
+    # Get by uppercased username
+    username_user = await sqlalchemy_user_db.get_by_username("Lancelot@camelot.bt")
+    assert username_user is not None
+    assert username_user.id == user.id
 
     # Unknown user
-    unknown_user = await sqlalchemy_user_db.get_by_email("galahad@camelot.bt")
+    unknown_user = await sqlalchemy_user_db.get_by_username("galahad@camelot.bt")
     assert unknown_user is None
 
     # Delete user
@@ -136,11 +136,11 @@ async def test_queries(sqlalchemy_user_db: SQLAlchemyUserDatabase[User, UUID_ID]
 
 
 @pytest.mark.asyncio
-async def test_insert_existing_email(
+async def test_insert_existing_username(
     sqlalchemy_user_db: SQLAlchemyUserDatabase[User, UUID_ID],
 ):
     user_create = {
-        "email": "lancelot@camelot.bt",
+        "username": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
     }
     await sqlalchemy_user_db.create(user_create)
@@ -155,7 +155,7 @@ async def test_queries_custom_fields(
 ):
     """It should output custom fields in query result."""
     user_create = {
-        "email": "lancelot@camelot.bt",
+        "username": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
         "first_name": "Lancelot",
     }
@@ -174,7 +174,7 @@ async def test_queries_oauth(
     oauth_account2: dict[str, Any],
 ):
     user_create = {
-        "email": "lancelot@camelot.bt",
+        "username": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
     }
 
@@ -201,11 +201,11 @@ async def test_queries_oauth(
     assert id_user.id == user.id
     assert id_user.oauth_accounts[0].access_token == "NEW_TOKEN"
 
-    # Get by email
-    email_user = await sqlalchemy_user_db_oauth.get_by_email(user_create["email"])
-    assert email_user is not None
-    assert email_user.id == user.id
-    assert len(email_user.oauth_accounts) == 2
+    # Get by username
+    username_user = await sqlalchemy_user_db_oauth.get_by_username(user_create["username"])
+    assert username_user is not None
+    assert username_user.id == user.id
+    assert len(username_user.oauth_accounts) == 2
 
     # Get by OAuth account
     oauth_user = await sqlalchemy_user_db_oauth.get_by_oauth_account(

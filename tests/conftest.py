@@ -32,7 +32,7 @@ def oauth_account1() -> dict[str, Any]:
         "access_token": "TOKEN",
         "expires_at": 1579000751,
         "account_id": "user_oauth1",
-        "account_email": "king.arthur@camelot.bt",
+        "account_username": "king.arthur@camelot.bt",
     }
 
 
@@ -43,5 +43,5 @@ def oauth_account2() -> dict[str, Any]:
         "access_token": "TOKEN",
         "expires_at": 1579000751,
         "account_id": "user_oauth2",
-        "account_email": "king.arthur@camelot.bt",
+        "account_username": "king.arthur@camelot.bt",
     }
